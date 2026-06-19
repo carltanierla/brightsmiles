@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+    /* Font Families */
+    --font-sans: "Inter", "sans-serif";
+    --font-display: "Plus Jakarta Sans", "sans-serif";
+
+    /* Colors */
+    --color-primary: #0ea5e9;
+    --color-dark: #0f172a;
+}

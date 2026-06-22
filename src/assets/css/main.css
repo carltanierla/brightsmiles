@@ -9,3 +9,8 @@
     --color-primary: #0ea5e9;
     --color-dark: #0f172a;
 }
+
+html, body, #app {
+    height: 100%;
+    margin: 0;
+}

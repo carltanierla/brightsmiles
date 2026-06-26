@@ -200,22 +200,62 @@
       </div>
     </section>
 
-    <section ref="mascotSectionRef" id="mascot-section" class="relative w-full bg-[#111111] h-[300vh]">
-      <div class="sticky top-0 w-full h-screen overflow-hidden">
-        <div class="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none transition-all duration-500" :style="mascotTextStyle">
-          <h2 class="font-display text-5xl md:text-7xl font-extrabold text-white drop-shadow-2xl text-center mb-4">Meet Dr. Bailey</h2>
-          <p class="text-xl md:text-2xl text-white font-medium text-center bg-[#111111]/40 px-8 py-3 rounded-full backdrop-blur-md border border-white/10 shadow-2xl">Even our chief morale officer has a perfect smile!</p>
+    <section
+        ref="sectionRef"
+        id="mascot-section"
+        class="relative w-full bg-[#FCFCFC] h-[300vh]"
+    >
+      <div
+          :class="[stickyClass, 'w-full h-screen overflow-hidden']"
+      >
+
+        <div
+            id="mascot-text"
+            class="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none transition-all duration-500"
+            :style="{
+          opacity: textStyles.opacity,
+          transform: textStyles.transform
+        }"
+        >
+          <h2 class="font-display text-5xl md:text-7xl font-extrabold text-white drop-shadow-2xl text-center mb-4">
+            Meet Dr. Bailey
+          </h2>
+          <p class="text-xl md:text-2xl text-white font-medium text-center bg-[#FCFCFC]/40 px-8 py-3 rounded-full backdrop-blur-md border border-white/10 shadow-2xl">
+            Even our chief morale officer has a perfect smile!
+          </p>
         </div>
 
-        <div class="relative w-full h-full flex items-center justify-center bg-[#111111] overflow-hidden">
-          <div class="relative w-auto h-auto max-w-full max-h-full transition-transform duration-75 ease-out" style="transform-origin: 46% 35%;" :style="mascotWrapperStyle">
-            <img src="/images/bailey.jpg" onerror="this.onerror=null; this.src='https://placehold.co/1200x1600/111111/38bdf8?text=Dr.+Bailey';" alt="Dr. Bailey the Dog" class="w-auto h-auto max-w-full max-h-full object-contain">
+        <div class="relative w-full h-full flex items-center justify-center bg-[#FCFCFC] overflow-hidden">
+          <div
+              id="mascot-wrapper"
+              class="relative w-auto h-auto max-w-full max-h-full transition-transform duration-75 ease-out"
+              style="transform-origin: 48% 35%;"
+              :style="{ transform: `scale(${wrapperScale})` }"
+          >
+            <img
+                :src="imgSrc"
+                @error="handleImgError"
+                alt="Dr. Bailey the Dog"
+                class="w-auto h-auto max-w-full max-h-full object-contain"
+            >
 
-            <div class="absolute z-20 transition-all duration-500 pointer-events-none" style="top: 30%; left: 50%;" :style="sparkleStyle">
-              <i class="fa-solid fa-sparkles text-white text-3xl md:text-5xl animate-pulse" style="filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1));"></i>
+            <div
+                id="mascot-sparkle"
+                class="absolute z-20 transition-all duration-75 pointer-events-none"
+                style="top: 50%; left: 48%;"
+                :style="{
+              opacity: sparkleStyles.opacity,
+              transform: sparkleStyles.transform
+            }"
+            >
             </div>
           </div>
-          <div class="absolute inset-0 transition-all duration-75 ease-out pointer-events-none z-10" :style="mascotOverlayStyle"></div>
+
+          <div
+              id="mascot-overlay"
+              class="absolute inset-0 transition-all duration-75 ease-out pointer-events-none z-10"
+              :style="{ backgroundColor: overlayBg }"
+          ></div>
         </div>
       </div>
     </section>
@@ -481,13 +521,13 @@ const resetInterval = () => {
   slideInterval = setInterval(nextSlide, 5000);
 };
 
-onMounted(() => {
-  slideInterval = setInterval(nextSlide, 5000);
-});
+// onMounted(() => {
+//
+// });
 
-onUnmounted(() => {
-  clearInterval(slideInterval);
-});
+// onUnmounted(() => {
+//
+// });
 
 // 1. Mobile Menu State
 const isMobileMenuOpen = ref(false)
@@ -523,52 +563,91 @@ const resetBooking = () => {
   }, 50)
 }
 
-// 3. Scroll Animation State (Mascot Zoom)
-const mascotSectionRef = ref(null)
+// Template Refs
+const sectionRef = ref(null)
 
-const mascotWrapperStyle = ref({ transform: 'scale(1)' })
-const mascotOverlayStyle = ref({ backgroundColor: 'rgba(17, 17, 17, 0)' })
-const mascotTextStyle = ref({ opacity: '0', transform: 'translateY(2rem)' })
-const sparkleStyle = ref({ opacity: '0', transform: 'translate(-50%, -50%) scale(0.5) rotate(0deg)' })
+// Fallback image asset handling
+const imgSrc = ref('/images/bailey.jpeg')
+const handleImgError = () => {
+  imgSrc.value = 'https://placehold.co/1200x1600/111111/38bdf8?text=Dr.+Bailey+(Place+bailey.jpg+in+same+folder)'
+}
+
+// Layout state flags
+const stickyClass = ref('absolute top-0 left-0 z-40')
+const wrapperScale = ref(1)
+const overlayBg = ref('rgba(17, 17, 17, 0)')
+
+const textStyles = reactive({
+  opacity: '0',
+  transform: 'translateY(2rem)'
+})
+
+const sparkleStyles = reactive({
+  opacity: '0',
+  transform: 'translate(-50%, -50%) scale(0.5) rotate(0deg)'
+})
 
 const handleScroll = () => {
-  if (!mascotSectionRef.value) return
+  if (!sectionRef.value) return
 
-  const rect = mascotSectionRef.value.getBoundingClientRect()
+  const rect = sectionRef.value.getBoundingClientRect()
   const windowHeight = window.innerHeight
 
+  // 1. Programmatic Viewport Pinning System
+  if (rect.top > 0) {
+    // Above the scroll track -> Keep at the top of the track
+    stickyClass.value = 'absolute top-0 left-0 z-40'
+  } else if (rect.top <= 0 && rect.bottom >= windowHeight) {
+    // Scrolling through the track -> Lock to screen viewport
+    stickyClass.value = 'fixed top-0 left-0 z-40'
+  } else {
+    // Scrolled past the track -> Lock to the absolute bottom of the track
+    stickyClass.value = 'absolute bottom-0 left-0 z-40'
+  }
+
+  // 2. Zoom & Element Progression Calculations
   let progress = -rect.top / (rect.height - windowHeight)
   progress = Math.max(0, Math.min(1, progress))
 
   if (progress > 0) {
-    const scale = 1 + (progress * 2.5)
-    mascotWrapperStyle.value.transform = `scale(${scale})`
-    mascotOverlayStyle.value.backgroundColor = `rgba(17, 17, 17, ${progress * 0.6})`
+    wrapperScale.value = 1 + progress
+    overlayBg.value = `rgba(17, 17, 17, ${progress * 0.6})`
 
+    // Text presentation trigger
     if (progress > 0.5) {
-      mascotTextStyle.value.opacity = '1'
-      mascotTextStyle.value.transform = 'translateY(0)'
+      textStyles.opacity = '1'
+      textStyles.transform = 'translateY(0)'
     } else {
-      mascotTextStyle.value.opacity = '0'
-      mascotTextStyle.value.transform = 'translateY(2rem)'
+      textStyles.opacity = '0'
+      textStyles.transform = 'translateY(2rem)'
     }
 
-    if (progress > 0.8) {
-      sparkleStyle.value.opacity = '1'
-      sparkleStyle.value.transform = 'translate(-50%, -50%) scale(1) rotate(15deg)'
+    // Finishing sparkle animation trigger
+    if (progress >= 1) {
+      sparkleStyles.opacity = '1'
+      sparkleStyles.transform = 'translate(50%, 50%) scale(1) rotate(15deg)'
     } else {
-      sparkleStyle.value.opacity = '0'
-      sparkleStyle.value.transform = 'translate(-50%, -50%) scale(0.5) rotate(0deg)'
+      sparkleStyles.opacity = '1'
+      sparkleStyles.transform = 'translate(50%, 50%) scale(0.5) rotate(0deg)'
     }
   } else {
-    mascotWrapperStyle.value.transform = 'scale(1)'
-    mascotOverlayStyle.value.backgroundColor = 'rgba(17, 17, 17, 0)'
-    mascotTextStyle.value.opacity = '0'
-    mascotTextStyle.value.transform = 'translateY(2rem)'
-    sparkleStyle.value.opacity = '0'
-    sparkleStyle.value.transform = 'translate(-50%, -50%) scale(0.5) rotate(0deg)'
+    // Neutral Reset Styles
+    wrapperScale.value = 1
+    overlayBg.value = 'rgba(17, 17, 17, 0)'
+    textStyles.opacity = '0'
+    textStyles.transform = 'translateY(2rem)'
+    sparkleStyles.opacity = '0'
+    sparkleStyles.transform = 'translate(-50%, -50%) scale(0.5) rotate(0deg)'
   }
 }
+
+// onMounted(() => {
+//
+// })
+
+// onUnmounted(() => {
+//
+// })
 
 // 4. Lifecycle Hooks
 onMounted(() => {

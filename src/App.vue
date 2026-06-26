@@ -44,7 +44,7 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
               </span>
-              Accepting New Patients in Sydney
+              Accepting New Patients
             </div>
             <h1 class="font-display text-5xl lg:text-7xl font-extrabold text-dark leading-tight mb-6 tracking-tight">
               Transforming Smiles, <br>
@@ -93,12 +93,12 @@
 
 
             <div class="absolute top-10 z-10 -left-10 bg-white p-4 rounded-2xl shadow-floating flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
-              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500 text-xl">
+              <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-500 text-xl">
                 <i class="fa-solid fa-star"></i>
               </div>
               <div>
-                <p class="text-sm font-bold text-dark">4.9/5 Rating</p>
-                <p class="text-xs text-slate-500">Based on 500+ reviews</p>
+                <p class="text-sm font-bold text-dark">4.3/5 Rating</p>
+                <p class="text-xs text-slate-500">Based on Google reviews</p>
               </div>
             </div>
 
@@ -220,38 +220,75 @@
       </div>
     </section>
 
-    <section id="reviews" class="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-16 items-center">
-          <div data-aos="fade-right">
-            <h2 class="text-primary font-bold tracking-wide uppercase text-sm mb-2">Testimonials</h2>
-            <h3 class="font-display text-4xl md:text-5xl font-extrabold text-dark mb-6">Loved by patients across Australia</h3>
-            <p class="text-lg text-slate-500 mb-8">Don't just take our word for it. See what our community in Sydney has to say about their new smiles.</p>
+    <section id="reviews">
+      <div class="flex w-full items-center justify-center bg-canvas p-6 md:p-12">
+        <div
+          @mouseenter="stopAutoplay"
+          @mouseleave="startAutoplay"
+          class="relative w-full max-w-4xl overflow-hidden rounded-3xl bg-white p-8 shadow-2xl shadow-indigo-100 md:p-16"
+        >
 
-            <div class="flex items-center gap-4 mb-8">
-              <div class="flex text-yellow-400 text-xl">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-              </div>
-              <span class="font-bold text-dark text-lg">4.9/5</span>
-              <span class="text-slate-500">(Google Reviews)</span>
-            </div>
+          <div class="pointer-events-none absolute left-6 top-6 text-indigo-50 opacity-50 md:left-12 md:top-12">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 md:h-40 md:w-40" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+            </svg>
           </div>
 
-          <div class="relative" data-aos="fade-left">
-            <div class="bg-white p-8 rounded-3xl shadow-soft relative z-10">
-              <i class="fa-solid fa-quote-left text-4xl text-sky-100 absolute top-8 left-8"></i>
-              <div class="relative z-10 pl-12">
-                <p class="text-xl text-slate-600 italic mb-6">"The team at BrightSmiles is phenomenal. As an adult getting braces, I was nervous, but they made the entire process seamless. Highly recommend to anyone in NSW!"</p>
-                <div class="flex items-center gap-4">
-                  <img src="https://i.pravatar.cc/100?img=47" alt="Sarah M." class="w-12 h-12 rounded-full object-cover">
+          <div class="relative z-10 flex min-h-70 flex-col items-center justify-center text-center">
+            <transition name="fade" mode="out-in">
+              <div :key="currentIndex" class="flex w-full flex-col items-center">
+
+                <p class="mb-10 text-xl font-medium leading-relaxed text-gray-700 md:text-3xl md:leading-tight">
+                  "{{ activeTestimonial.quote }}"
+                </p>
+
+                <div class="flex flex-col items-center justify-center space-y-3">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-lg font-bold text-white shadow-md">
+                    {{ getInitials(activeTestimonial.name) }}
+                  </div>
                   <div>
-                    <h5 class="font-bold text-dark">Sarah M.</h5>
-                    <p class="text-sm text-slate-500">Sydney, NSW</p>
+                    <h4 class="text-lg font-bold text-gray-900">{{ activeTestimonial.name }}</h4>
+                    <p class="text-sm font-medium text-indigo-500">{{ activeTestimonial.role }}</p>
                   </div>
                 </div>
+
               </div>
+            </transition>
+          </div>
+
+          <div class="mt-10 flex items-center justify-between md:mt-12">
+            <button
+                @click="prev"
+                class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-all hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label="Previous testimonial"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <div class="flex space-x-2">
+              <button
+                  v-for="(_, index) in testimonials"
+                  :key="index"
+                  @click="setSlide(index)"
+                  :class="[
+                'h-2.5 rounded-full transition-all duration-300',
+                currentIndex === index ? 'w-8 bg-indigo-600' : 'w-2.5 bg-gray-300 hover:bg-gray-400'
+              ]"
+                  :aria-label="`Go to slide ${index + 1}`"
+              ></button>
             </div>
-            <div class="absolute -top-6 -right-6 w-full h-full border-2 border-primary border-dashed rounded-3xl -z-0"></div>
+
+            <button
+                @click="next"
+                class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-all hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label="Next testimonial"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -387,7 +424,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div class="col-span-1 md:col-span-2">
-            <img src="/images/BrightSmiles.png" onerror="this.onerror=null; this.src='https://placehold.co/200x60/0f172a/0ea5e9?text=BrightSmiles';" alt="BrightSmiles Logo" class="h-10 mb-6 opacity-80">
+            <img src="/images/BrightSmiles2.png" onerror="this.onerror=null; this.src='https://placehold.co/200x60/0f172a/0ea5e9?text=BrightSmiles';" alt="BrightSmiles Logo" class="h-10 mb-6 opacity-80">
             <p class="max-w-sm mb-6">Transforming smiles across Australia with state-of-the-art orthodontic care and general dentistry.</p>
           </div>
           <div>
@@ -416,7 +453,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, computed } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -540,11 +577,106 @@ onMounted(() => {
     offset: 50,
   })
   window.addEventListener('scroll', handleScroll)
+  startAutoplay()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  stopAutoplay()
 })
+const testimonials = ref([
+  {
+    id: 1,
+    quote: "I just wanted to thank you for a wonderful job so well done and for an amazing service throughout. I'm so glad we chose Bright Smiles! Thank you!",
+    name: "Roshni R.",
+    role: "Customer"
+  },
+  {
+    id: 2,
+    quote: "Dr Ben Tai is a high-standard professional, I am 3 years post braces removal and I love my smile! I always get compliments on it. I started to get some teeth shifting due to not wearing my retainers on several occasions, and Dr Tai booked me in immediately after emailing him and sorted me out.",
+    name: "Sevasti S.",
+    role: "Customer"
+  },
+  {
+    id: 3,
+    quote: "Thanks to Dr Ben for your help to fix our son's retainer and for your advice on braces for both of our boys.",
+    name: "Luke",
+    role: "Customer"
+  },
+  {
+    id: 4,
+    quote: "I received the best possible treatment made the entire journey smooth, even though my case was quite complicated. I am so grateful my dentist referred me to him. Thank you, Dr. Ben, for restoring my confidence and making me feel great about my smile again!",
+    name: "Hellen H.",
+    role: "Customer"
+  },
+  {
+    id: 5,
+    quote: "Thank you to Ben for the comfortable & knowledgeable experience of taking my son through the process of applying, maintaining & removal of his braces.\n" +
+        "The intricate attention to detail in creating the perfect results.\n" +
+        "We are very happy & shall continue the visits to keep the perfect smile 😁",
+    name: "Ri Ri S.",
+    role: "Customer"
+  },
+  {
+    id: 5,
+    quote: "The clinic was comfortable and Dr Tai was very friendly and happy to explain everything that he was doing. He seems like he genuinely enjoys his work and helping his patients.",
+    name: "Renae",
+    role: "Customer"
+  },
+])
+
+const currentIndex = ref(0)
+let autoplayInterval = null // Reference to store the interval timer
+
+const activeTestimonial = computed(() => testimonials.value[currentIndex.value])
+
+const getInitials = (name) => {
+  const parts = name.split(' ')
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
+}
+
+// --- Autoplay Logic ---
+
+const startAutoplay = () => {
+  // Clear any existing interval to prevent duplicates
+  stopAutoplay()
+  autoplayInterval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % testimonials.value.length
+  }, 5000) // 5000ms = 5 seconds
+}
+
+const stopAutoplay = () => {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval)
+    autoplayInterval = null
+  }
+}
+
+const resetAutoplay = () => {
+  stopAutoplay()
+  startAutoplay()
+}
+
+// --- Navigation Logic ---
+// We call resetAutoplay() on manual actions so the timer starts fresh
+
+const next = () => {
+  currentIndex.value = (currentIndex.value + 1) % testimonials.value.length
+  resetAutoplay()
+}
+
+const prev = () => {
+  currentIndex.value = (currentIndex.value - 1 + testimonials.value.length) % testimonials.value.length
+  resetAutoplay()
+}
+
+const setSlide = (index) => {
+  currentIndex.value = index
+  resetAutoplay()
+}
 </script>
 
 <style scoped>
@@ -553,4 +685,20 @@ onUnmounted(() => {
 .shadow-floating { box-shadow: 0 20px 50px -10px rgba(14, 165, 233, 0.25); }
 .text-gradient { background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .bg-gradient-hero { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+
+/* Vue Transition classes for smooth fading */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

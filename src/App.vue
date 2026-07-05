@@ -199,6 +199,32 @@
           </div>
         </div>
       </div>
+
+      <div class="dental-services flex flex-col">
+        <div class="services-container">
+          <!-- Iterating through the services array using v-for -->
+          <div
+              v-for="(service, index) in services"
+              :key="index"
+              class="service-card"
+          >
+            <div class="image-wrapper">
+              <img :src="service.image" :alt="service.altText" />
+            </div>
+            <div class="content">
+              <!-- Using v-html to render the <br> tag in the titles safely -->
+              <h3 v-html="service.title"></h3>
+              <p>{{ service.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex sm:flex-row text-center justify-center mt-10 gap-4">
+          <a href="#booking" class="bg-primary hover:bg-sky-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-floating text-center flex items-center justify-center gap-2 group">
+            Get in touch <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+      </div>
     </section>
 
     <section id="locations-section" class="py-24 bg-slate-50 border-t border-slate-200 relative z-20 overflow-hidden">
@@ -651,6 +677,34 @@ import { ref, reactive, onMounted, onUnmounted, computed } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
+// Reactive data array holding the card content
+const services = ref([
+  {
+    title: 'Teeth Whitening',
+    description: 'Taking Care of You and Your Gorgeous Smile',
+    image: '/images/person1.png',
+    altText: 'Woman smiling brightly'
+  },
+  {
+    title: 'Comprehensive<br>Child Treatment',
+    description: 'Helping you to be Healthy',
+    image: '/images/person2.png',
+    altText: 'Young woman smiling'
+  },
+  {
+    title: 'Clear Aligners',
+    description: 'Comfort and Convenience that Brings you Freedom',
+    image: '/images/person3.png',
+    altText: 'Man with beard smiling'
+  },
+  {
+    title: 'Customize Braces',
+    description: 'Personalize based on your needs',
+    image: '/images/person4.png',
+    altText: 'Person with a confident smile'
+  }
+])
+
 const slides = [
   { src: '/images/image1.png', alt: 'Happy Family' },
   { src: '/images/image2.jpg', alt: 'Orthodontic Care' },
@@ -972,5 +1026,120 @@ const setSlide = (index) => {
 .fade-map-enter-from,
 .fade-map-leave-to {
   opacity: 0;
+}
+
+.dental-services {
+  /* CSS Variables scoped locally */
+  --primary-color: #4dc2f8;
+  --text-dark: #333333;
+  --text-light: #777777;
+  --bg-color: #f4f7f6;
+  --card-bg: #ffffff;
+
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.services-container {
+  display: grid;
+  /* Grid automatically adjusts to fit 3 or 4 columns beautifully */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* --- Card Styles --- */
+.service-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s forwards;
+}
+
+/* Staggered Animation Delays updated for 4 elements */
+.service-card:nth-child(1) { animation-delay: 0.1s; }
+.service-card:nth-child(2) { animation-delay: 0.3s; }
+.service-card:nth-child(3) { animation-delay: 0.5s; }
+.service-card:nth-child(4) { animation-delay: 0.7s; }
+
+.service-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(77, 194, 248, 0.15);
+}
+
+/* --- Image Styles --- */
+.image-wrapper {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.6s ease;
+}
+
+.service-card:hover .image-wrapper img {
+  transform: scale(1.08);
+}
+
+/* --- Text Content Styles --- */
+.content {
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.content h3 {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.content p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* --- Entrance Animation --- */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .services-container {
+    gap: 2rem;
+  }
+  .image-wrapper {
+    height: 250px
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
